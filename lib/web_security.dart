@@ -115,7 +115,7 @@ class WebSecurity {
       Timer(Duration(milliseconds: 500), () {
         iframe.contentWindow?.postMessage(
           '{"event":"command","func":"playVideo"}'.toJS,
-          '*'.toJS,
+          'https://www.youtube.com'.toJS,
         );
       });
       // Wait a bit to ensure iframe is fully loaded before sending the command
