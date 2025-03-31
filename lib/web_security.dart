@@ -10,8 +10,8 @@ class WebSecurity {
     'k',
   ];
   static List<String> _keyPresses = [];
-  static initWebSecurityMode(File keyFile) async {
-    bool b = await keyFile.exists();
+  static initWebSecurityMode(File? keyFile) async {
+    bool b = await keyFile?.exists() ?? true;
     if (b) {
       web.window.onKeyDown.listen((key) {
         _handleKeyPress(key);

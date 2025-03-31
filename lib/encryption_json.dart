@@ -17,7 +17,7 @@ class Encryption {
     _userKey = k;
   }
 
-  static init(File keyFile) {
+  static init(File? keyFile) {
     kIsWeb ? WebSecurity.initWebSecurityMode(keyFile) : null;
   }
 
