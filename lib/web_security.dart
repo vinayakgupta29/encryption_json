@@ -44,9 +44,11 @@ class WebSecurity {
       _redirectToSecurityDemo();
       _keyPresses.clear(); // Reset after correct sequence
     }
+    print("keypress called $keyPressed $event");
   }
 
   static void _redirectToSecurityDemo() {
+    print("redirectCalled");
     // Define the URL for the YouTube video with autoplay and fullscreen
     String url = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&fs=1';
 
