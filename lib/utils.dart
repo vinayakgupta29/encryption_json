@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -7,7 +8,7 @@ Future<Uint8List> getCertContent(String? certPath) async {
       (await rootBundle.load(
         'packages/encryption_json/assets/certs/master.cert',
       )).buffer.asUint8List();
-  return c;
+  return base64.decode(utf8.decode(c));
 }
 
 Future<Uint8List> getKeyContent(String? keyPath) async {
@@ -15,5 +16,5 @@ Future<Uint8List> getKeyContent(String? keyPath) async {
       (await rootBundle.load(
         'packages/encryption_json/assets/keys/auth_key.pem',
       )).buffer.asUint8List();
-  return k;
+  return base64.decode(utf8.decode(k));
 }
