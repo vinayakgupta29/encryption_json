@@ -38,7 +38,7 @@ class WebSecurity {
     // Set up an event listener for the keydown event
     web.window.onKeyDown.listen((web.KeyboardEvent event) {
       // Push the key pressed to the _keyPresses list
-      _keyPresses.add(event.code);
+      _keyPresses.add(event.key.toLowerCase());
 
       // Check if the current key sequence matches the enable sequence
       if (_keyPresses.length >= enableSequence.length) {
