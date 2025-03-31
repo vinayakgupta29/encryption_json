@@ -29,6 +29,7 @@ flutter:
   # To add assets to your package, add an assets section, like this:
   assets:
     - assets/keys/auth_key.pem
+    - assets/certs/master.cert
     # - images/a_dot_burr.jpeg
     # - images/a_dot_ham.jpeg
   #
