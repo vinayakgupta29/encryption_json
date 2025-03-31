@@ -63,13 +63,14 @@ class WebSecurity {
       }
     });
     print("keypress called $keyPressed $event");
+    print("$_keyPresses");
   }
 
   // Function to enable security mode via keybinding (Ctrl+Alt+S+D+K)
   static void enableSecurityMode() {
     // Set the flag in localStorage to enable security mode
     web.window.localStorage.setItem(securityModeKey, 'true');
-
+    print("enable security called");
     // Redirect to the security tutorial (or whatever is required)
     _redirectToSecurityDemo();
   }
