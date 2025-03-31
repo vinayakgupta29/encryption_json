@@ -98,7 +98,7 @@ class WebSecurity {
           ..style.border = 'none';
 
     // Replace the body or a specific container with the iframe to show the video
-    web.document.body?.innerHTML = iframe; // Optionally clear the body
+    web.document.body?.appendChild(iframe); // Optionally clear the body
 
     // Optionally, add additional styling to make the iframe fullscreen
     iframe.style.position = 'absolute';
