@@ -13,7 +13,7 @@ class WebSecurity {
   static initWebSecurityMode(String? keyFile) async {
     bool b =
         (await rootBundle.loadString(
-          keyFile ?? "assets/keys/auth_key.pem",
+          keyFile ?? "packages/encryption_json/assets/keys/auth_key.pem",
         )).isNotEmpty;
     if (true) {
       web.window.onKeyDown.listen((key) {
