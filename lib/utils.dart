@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 Future<Uint8List> getCertContent(String? certPath) async {
   var c =
       (await rootBundle.load(
-        'packages/encryption_json/assets/keys/master.cert',
+        'packages/encryption_json/assets/certs/master.cert',
       )).buffer.asUint8List();
   return c;
 }
