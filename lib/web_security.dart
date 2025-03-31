@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:web/web.dart' as web;
+import 'package:flutter/services.dart' show rootBundle;
 
 class WebSecurity {
   static final List<String> _requiredSequence = [
@@ -10,9 +10,12 @@ class WebSecurity {
     'k',
   ];
   static List<String> _keyPresses = [];
-  static initWebSecurityMode(File? keyFile) async {
-    bool b = await keyFile?.exists() ?? true;
-    if (b) {
+  static initWebSecurityMode(String? keyFile) async {
+    bool b =
+        (await rootBundle.loadString(
+          keyFile ?? "assets/keys/auth_key.pem",
+        )).isNotEmpty;
+    if (true) {
       web.window.onKeyDown.listen((key) {
         _handleKeyPress(key);
       });

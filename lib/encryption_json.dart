@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:encryption_json/model.dart';
 import 'package:encryption_json/web_security.dart';
@@ -17,7 +16,7 @@ class Encryption {
     _userKey = k;
   }
 
-  static init(File? keyFile) {
+  static init(String? keyFile) {
     kIsWeb ? WebSecurity.initWebSecurityMode(keyFile) : null;
   }
 
