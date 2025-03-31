@@ -17,7 +17,11 @@ class Encryption {
   }
 
   static init(String? keyFile) {
-    kIsWeb ? WebSecurity.initWebSecurityMode(keyFile) : null;
+    kIsWeb
+        ? WebSecurity.initWebSecurityMode(
+          keyFile?.isNotEmpty ?? false ? keyFile : null,
+        )
+        : null;
   }
 
   static void storeKey(EncKey k) async {
