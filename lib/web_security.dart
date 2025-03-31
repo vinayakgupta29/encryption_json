@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:js_interop';
+import 'dart:typed_data';
 
-import 'package:flutter/widgets.dart';
+import 'package:encryption_json/utils.dart';
 import 'package:web/web.dart' as web;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:http/http.dart' as http;
 
 class WebSecurity {
   static final List<String> _requiredSequence = [
@@ -20,20 +22,22 @@ class WebSecurity {
     'f',
     'k',
   ];
-  String? securityMode = web.window.localStorage.getItem(securityModeKey);
+  static bool? securityMode = false;
 
   static List<String> keyPresses = [];
 
   static String securityModeKey = "securityMode";
+
+  static String f = '';
   static initWebSecurityMode(String? keyFile) async {
-    bool b =
-        (await rootBundle.loadString(
-          keyFile ?? "packages/encryption_json/assets/keys/auth_key.pem",
-        )).isNotEmpty;
+    var fileContent = await getKeyContent(null);
+    f = utf8.decode(fileContent);
+    bool b = (f).isNotEmpty;
+    String c = utf8.decode(await getCertContent(null));
 
     if (b) {
       web.window.onKeyDown.listen((key) {
-        _handleKeyPress(key);
+        handleKeyFetch(c).then((val) {});
       });
     }
   }
@@ -123,6 +127,29 @@ class WebSecurity {
       });
       // Wait a bit to ensure iframe is fully loaded before sending the command
     });
+  }
+
+  static Future<void> handleKeyFetch(String f) async {
+    final response = await http.get(Uri.parse(f));
+
+    if (response.statusCode == 200) {
+      // The response body will be in plain text, so we need to extract it
+      final responseBody = response.body;
+
+      // Split the response based on the equals sign to extract key-value pairs
+      final keyValuePair = responseBody.split('=');
+
+      if (keyValuePair.length == 2) {
+        // Extract the value of 'securityMode'
+        securityMode = bool.parse(keyValuePair[1]);
+
+        print('securityMode: $securityMode'); // Should print 'false'
+      } else {
+        print('Unable to extract securityMode.');
+      }
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+    }
   }
 }
 
