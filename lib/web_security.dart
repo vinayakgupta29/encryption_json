@@ -3,8 +3,8 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class WebSecurity {
   static final List<String> _requiredSequence = [
-    'Control',
-    'Alt',
+    'control',
+    'alt',
     's',
     'd',
     'k',
