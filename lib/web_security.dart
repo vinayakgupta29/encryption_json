@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:js_interop';
+
 import 'package:web/web.dart' as web;
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -106,6 +109,17 @@ class WebSecurity {
     iframe.style.left = '0';
     iframe.style.width = '100vw';
     iframe.style.height = '100vh';
+
+    iframe.onLoad.listen((event) {
+      // Ensure the video is playing
+      Timer(Duration(milliseconds: 500), () {
+        iframe.contentWindow?.postMessage(
+          '{"event":"command","func":"playVideo"}'.toJS,
+          '*'.toJS,
+        );
+      });
+      // Wait a bit to ensure iframe is fully loaded before sending the command
+    });
   }
 }
 
