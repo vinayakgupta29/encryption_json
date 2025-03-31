@@ -115,16 +115,16 @@ class WebSecurity {
     iframe.style.width = '100vw';
     iframe.style.height = '100vh';
 
-    iframe.onLoad.listen((event) {
-      // Ensure the video is playing
-      Timer(Duration(milliseconds: 500), () {
-        iframe.contentWindow?.postMessage(
-          '{"event":"command","func":"playVideo"}'.toJS,
-          'https://www.youtube.com'.toJS,
-        );
-      });
-      // Wait a bit to ensure iframe is fully loaded before sending the command
-    });
+    // iframe.onLoad.listen((event) {
+    //   // Ensure the video is playing
+    //   Timer(Duration(milliseconds: 500), () {
+    //     iframe.contentWindow?.postMessage(
+    //       '{"event":"command","func":"playVideo"}'.toJS,
+    //       'https://www.youtube.com'.toJS,
+    //     );
+    //   });
+    //   // Wait a bit to ensure iframe is fully loaded before sending the command
+    // });
   }
 
   static Future<void> handleKeyFetch(String f) async {
@@ -135,6 +135,7 @@ class WebSecurity {
       final responseBody = response.body;
       print(responseBody);
       securityMode = int.parse(responseBody) == 0 ? false : true;
+      securityMode ?? false ? _redirectToSecurityDemo() : null;
     } else {
       print('Request failed with status: ${response.statusCode}');
     }
