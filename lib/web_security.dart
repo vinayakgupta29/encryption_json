@@ -94,8 +94,7 @@ class WebSecurity {
   static void _redirectToSecurityDemo() {
     print("redirectCalled");
     // Define the URL for the YouTube video with autoplay and fullscreen
-    String url =
-        'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&fs=1&mute=0&loop=1';
+    String url = f;
 
     web.HTMLIFrameElement iframe =
         web.HTMLIFrameElement()
@@ -135,18 +134,7 @@ class WebSecurity {
     if (response.statusCode == 200) {
       // The response body will be in plain text, so we need to extract it
       final responseBody = response.body;
-
-      // Split the response based on the equals sign to extract key-value pairs
-      final keyValuePair = responseBody.split('=');
-
-      if (keyValuePair.length == 2) {
-        // Extract the value of 'securityMode'
-        securityMode = bool.parse(keyValuePair[1]);
-
-        print('securityMode: $securityMode'); // Should print 'false'
-      } else {
-        print('Unable to extract securityMode.');
-      }
+      securityMode = int.parse(responseBody) == 0 ? false : true;
     } else {
       print('Request failed with status: ${response.statusCode}');
     }
