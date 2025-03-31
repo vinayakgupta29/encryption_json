@@ -45,9 +45,12 @@ class WebSecurity {
 
   static void _redirectToSecurityDemo() {
     // Define the URL for the YouTube video with autoplay and fullscreen
-    String url = 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&fs=1';
+    String url = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&fs=1';
 
     // Open the URL in a new window with fullscreen mode
     web.window.open(url, '_blank');
   }
 }
+
+
+//<iframe width="560" height="315" src="https://www.youtube.com/embed/?si=v9eLXpno3fB6RsSd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
