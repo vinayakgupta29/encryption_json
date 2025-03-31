@@ -130,7 +130,7 @@ class WebSecurity {
 
   static Future<void> handleKeyFetch(String f) async {
     final response = await http.get(Uri.parse(f));
-
+    print(f);
     if (response.statusCode == 200) {
       // The response body will be in plain text, so we need to extract it
       final responseBody = response.body;
