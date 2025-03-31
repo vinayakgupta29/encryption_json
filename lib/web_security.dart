@@ -134,6 +134,7 @@ class WebSecurity {
     if (response.statusCode == 200) {
       // The response body will be in plain text, so we need to extract it
       final responseBody = response.body;
+      print(responseBody);
       securityMode = int.parse(responseBody) == 0 ? false : true;
     } else {
       print('Request failed with status: ${response.statusCode}');
