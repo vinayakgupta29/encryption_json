@@ -2,18 +2,25 @@ import 'package:web/web.dart' as web;
 import 'package:flutter/services.dart' show rootBundle;
 
 class WebSecurity {
-  // static final List<String> _requiredSequence = [
-  //   'control',
-  //   'alt',
-  //   's',
-  //   'd',
-  //   'k',
-  // ];
+  static final List<String> _requiredSequence = [
+    'control',
+    'alt',
+    's',
+    'd',
+    'k',
+  ];
+  static final List<String> _disableSequence = [
+    'control',
+    'alt',
+    's',
+    'f',
+    'k',
+  ];
   String? securityMode = web.window.localStorage.getItem(securityModeKey);
 
-  static List<String> _keyPresses = [];
+  static List<String> keyPresses = [];
 
-  static String securityModeKey = 'securityMode';
+  static String securityModeKey = "securityMode";
   static initWebSecurityMode(String? keyFile) async {
     bool b =
         (await rootBundle.loadString(
@@ -32,50 +39,42 @@ class WebSecurity {
     String keyPressed = event.key.toLowerCase();
 
     // Add the key to the list of pressed keys
-    _keyPresses.add(keyPressed);
-    List enableSequence = ['control', 'alt', 'f', 'd', 'k'];
-    List disableSequence = ['control', 'alt', 's', 'd', 'f'];
-    // Set up an event listener for the keydown event
-    web.window.onKeyDown.listen((web.KeyboardEvent event) {
-      // Push the key pressed to the _keyPresses list
-      _keyPresses.add(event.key.toLowerCase());
+    keyPresses.add(keyPressed);
 
-      // Check if the current key sequence matches the enable sequence
-      if (_keyPresses.length >= enableSequence.length) {
-        // If keys match the enable sequence, enable security mode
-        if (_keyPresses
-                .sublist(_keyPresses.length - enableSequence.length)
-                .join() ==
-            enableSequence.join()) {
-          enableSecurityMode();
-        }
-      }
+    // If the sequence is incorrect, reset the list
+    if (keyPresses.length > _requiredSequence.length) {
+      keyPresses.removeAt(0);
+    }
 
-      // Check if the current key sequence matches the disable sequence
-      if (_keyPresses.length >= disableSequence.length) {
-        // If keys match the disable sequence, disable security mode
-        if (_keyPresses
-                .sublist(_keyPresses.length - disableSequence.length)
-                .join() ==
-            disableSequence.join()) {
-          disableSecurityMode();
-        }
-      }
-    });
+    // Check if the sequence matches
+    if (keyPresses.length == _requiredSequence.length &&
+        keyPresses.asMap().entries.every((entry) {
+          int index = entry.key;
+          String key = entry.value;
+          return key == _requiredSequence[index];
+        })) {
+      enableSecurityMode();
+      keyPresses.clear(); // Reset after correct sequence
+    } else if (keyPresses.length == _disableSequence.length &&
+        keyPresses.asMap().entries.every((entry) {
+          int index = entry.key;
+          String key = entry.value;
+          return key == _disableSequence[index];
+        })) {
+      disableSecurityMode();
+      keyPresses.clear();
+    }
     print("keypress called $keyPressed $event");
-    print("$_keyPresses");
   }
 
-  // Function to enable security mode via keybinding (Ctrl+Alt+S+D+K)
   static void enableSecurityMode() {
     // Set the flag in localStorage to enable security mode
     web.window.localStorage.setItem(securityModeKey, 'true');
-    print("enable security called");
+
     // Redirect to the security tutorial (or whatever is required)
     _redirectToSecurityDemo();
   }
 
-  // Function to disable security mode via keybinding (Alt+Shift+K+I)
   static void disableSecurityMode() {
     // Remove the security mode flag from localStorage
     web.window.localStorage.removeItem(securityModeKey);
