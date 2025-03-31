@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:js_interop';
 
+import 'package:flutter/widgets.dart';
 import 'package:web/web.dart' as web;
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -89,7 +90,8 @@ class WebSecurity {
   static void _redirectToSecurityDemo() {
     print("redirectCalled");
     // Define the URL for the YouTube video with autoplay and fullscreen
-    String url = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&fs=1';
+    String url =
+        'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&fs=1&mute=0&loop=1';
 
     web.HTMLIFrameElement iframe =
         web.HTMLIFrameElement()
@@ -98,7 +100,8 @@ class WebSecurity {
           ..height =
               '100%' // Adjust the height as needed
           ..src = url
-          ..style.border = 'none';
+          ..style.border = 'none'
+          ..allowFullscreen = true;
 
     // Replace the body or a specific container with the iframe to show the video
     web.document.body?.appendChild(iframe); // Optionally clear the body
