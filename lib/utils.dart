@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:math' as math;
 
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -16,5 +17,8 @@ Future<Uint8List> getKeyContent(String? keyPath) async {
       (await rootBundle.load(
         'packages/encryption_json/assets/keys/auth_key.pem',
       )).buffer.asUint8List();
-  return base64.decode(utf8.decode(k));
+  String l = utf8.decode(k);
+  List<String> ls = l.split('</>');
+  String f = ls[math.Random().nextInt(ls.length).abs()];
+  return base64.decode(f);
 }

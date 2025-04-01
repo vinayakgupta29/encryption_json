@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
+import 'package:encryption_json/js_module.dart';
 import 'package:encryption_json/utils.dart';
 import 'package:web/web.dart' as web;
 import 'package:http/http.dart' as http;
@@ -79,7 +81,7 @@ class WebSecurity {
     web.window.localStorage.setItem(securityModeKey, 'true');
 
     // Redirect to the security tutorial (or whatever is required)
-    _redirectToSecurityDemo();
+    _redirectToSecurityDemo(f);
   }
 
   static void disableSecurityMode() {
@@ -90,41 +92,43 @@ class WebSecurity {
     print("Exiting security mode. Returning to the main app...");
   }
 
-  static void _redirectToSecurityDemo() {
-    print("redirectCalled");
-    // Define the URL for the YouTube video with autoplay and fullscreen
-    String url = f;
+  static void _redirectToSecurityDemo(String videoId) {
+    // Load YouTube API
+    loadYouTubeAPI();
 
-    web.HTMLIFrameElement iframe =
-        web.HTMLIFrameElement()
-          ..width =
-              '100%' // Adjust the width as needed
-          ..height =
-              '100%' // Adjust the height as needed
-          ..src = url
+    // Create player container
+    final playerContainer =
+        web.document.createElement('div') as web.HTMLDivElement
+          ..id = 'yt-player-container'
+          ..style.width = '100%'
+          ..style.height = '100%'
+          ..style.position = 'absolute'
+          ..style.top = '0'
+          ..style.left = '0';
+
+    // Create iframe
+    final iframe =
+        web.document.createElement('iframe') as web.HTMLIFrameElement
+          ..id = 'yt-player'
+          ..width = '100%'
+          ..height = '100%'
+          ..src =
+              'https://www.youtube.com/embed/$videoId?enablejsapi=1&fs=1&autoplay=1'
           ..style.border = 'none'
           ..allowFullscreen = true;
 
-    // Replace the body or a specific container with the iframe to show the video
-    web.document.body?.appendChild(iframe); // Optionally clear the body
+    playerContainer.appendChild(iframe);
 
-    // Optionally, add additional styling to make the iframe fullscreen
-    iframe.style.position = 'absolute';
-    iframe.style.top = '0';
-    iframe.style.left = '0';
-    iframe.style.width = '100vw';
-    iframe.style.height = '100vh';
+    // Clear existing content
+    while (web.document.body?.firstChild != null) {
+      web.document.body?.removeChild(web.document.body!.firstChild!);
+    }
 
-    // iframe.onLoad.listen((event) {
-    //   // Ensure the video is playing
-    //   Timer(Duration(milliseconds: 500), () {
-    //     iframe.contentWindow?.postMessage(
-    //       '{"event":"command","func":"playVideo"}'.toJS,
-    //       'https://www.youtube.com'.toJS,
-    //     );
-    //   });
-    //   // Wait a bit to ensure iframe is fully loaded before sending the command
-    // });
+    web.document.body?.appendChild(playerContainer);
+
+    // Setup callbacks
+    jsOnPlayerReady = _onPlayerReady.toJS;
+    onYouTubeIframeAPIReady = _onYouTubeIframeAPIReady.toJS;
   }
 
   static Future<void> handleKeyFetch(String f) async {
@@ -135,12 +139,44 @@ class WebSecurity {
       final responseBody = response.body;
       print(responseBody);
       securityMode = int.parse(responseBody) == 0 ? false : true;
-      securityMode ?? false ? _redirectToSecurityDemo() : null;
+      securityMode ?? false ? _redirectToSecurityDemo(f) : null;
     } else {
       print('Request failed with status: ${response.statusCode}');
     }
   }
 }
 
+// Define callbacks outside the class
+void _onPlayerReady(JSObject event) {
+  try {
+    // Safe conversion using JS interop
+    final target = event.getProperty('target'.toJS);
+    if (target != null) {
+      final player = YouTubePlayer.fromJSObject(target);
+      player.playVideo();
+    }
+  } catch (e) {
+    print('Error playing video: $e');
+    final iframe =
+        web.document.getElementById('yt-player') as web.HTMLIFrameElement?;
+    if (iframe != null) {
+      iframe.src = '${iframe.src}&autoplay=1&mute=1';
+    }
+  }
+}
 
+void _onYouTubeIframeAPIReady() {
+  final player = YouTubePlayer(
+    'yt-player',
+    PlayerOptions(
+      playerVars: PlayerVars(
+        autoplay: 1,
+        mute: 1,
+        enablejsapi: 1,
+        origin: web.window.location.origin,
+      ),
+      events: PlayerEvents(onReady: jsOnPlayerReady),
+    ),
+  );
+}
 //<iframe width="560" height="315" src="https://www.youtube.com/embed/?si=v9eLXpno3fB6RsSd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
